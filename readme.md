@@ -6,7 +6,7 @@ Lane tracing robot based on https://www.ottodiy.com/
 
 ### Body
 
-3D print the following parts from https://cad.onshape.com/documents/3656c15713d32064cb604121/w/ef53d2c5686ca7702b412034/e/5328c5d4ad967eadb30c4031
+3D print the following parts from [OnShape](https://cad.onshape.com/documents/3656c15713d32064cb604121/w/ef53d2c5686ca7702b412034/e/5328c5d4ad967eadb30c4031)
 
 * Bottom base [OnShape](https://cad.onshape.com/documents/3656c15713d32064cb604121/w/ef53d2c5686ca7702b412034/e/2f56aaf369c221afff0373af)
 * Roof [OnShape](https://cad.onshape.com/documents/3656c15713d32064cb604121/w/ef53d2c5686ca7702b412034/e/d3c416ececc462d7493f073c)

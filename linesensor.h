@@ -4,10 +4,6 @@
 #include "linesensorvalues.h"
 #include "linesensorstatus.h"
 
-#define SENSOR_MARGIN 5        // how much change from base to detect black line
-#define SENSOR_READ_WINDOW 20  // how many values to average
-#define RECALIBERATION 200     // recaliberate after this many reads
-
 class LineSensor
 {
   public:
@@ -28,6 +24,9 @@ class LineSensor
     LineSensorStatus compareSensorValues(LineSensorValues base, LineSensorValues current);
     LineSensorValues readSensors(byte readCount);
     void caliberate();
+    void recaliberate();
     void printValues(Print& printer, char* prefix, LineSensorValues svalues);
     void printStatus(Print& printer, LineSensorStatus status);
+    void readAndRecaliberate();
+    void testLoop();
 };

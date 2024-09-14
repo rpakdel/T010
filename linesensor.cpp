@@ -1,4 +1,5 @@
 #include "linesensor.h"
+#include "config.h"
 
 LineSensor::LineSensor(byte leftSensorAnalogPin, byte rightSensorAnalogPin) :
   mLeftAPin(leftSensorAnalogPin), 
@@ -18,17 +19,32 @@ void LineSensor::begin()
 {
   pinMode(mLeftAPin, INPUT);
   pinMode(mRightAPin, INPUT);
-  mBase = readSensors(SENSOR_READ_WINDOW);
+  caliberate();
 }
 
 void LineSensor::loop()
 {
-  LineSensorValues current = readSensors(SENSOR_READ_WINDOW);
-  printValues(Serial, "BASE-", mBase);
-  printValues(Serial, "CURRENT-", current);
+  #ifndef TEST_MODE
+    readAndRecaliberate();
+  #else
+    testLoop();
+  #endif
+}
+
+void LineSensor::readAndRecaliberate()
+{
+  LineSensorValues current = readSensors(IRSENSOR_READ_WINDOW);
+  //printValues(Serial, "BASE-", mBase);
+  //printValues(Serial, "CURRENT-", current);
   mStatus = compareSensorValues(mBase, current);
   printStatus(Serial, mStatus);
-  caliberate();
+  recaliberate();
+}
+
+void LineSensor::testLoop()
+{
+  LineSensorValues current = readSensors(IRSENSOR_READ_WINDOW);
+  printValues(Serial, "TEST-", current);
 }
 
 LineSensorStatus LineSensor::getStatus()
@@ -55,12 +71,12 @@ LineSensorValues LineSensor::readSensors(byte readCount)
 LineSensorStatus LineSensor::compareSensorValues(LineSensorValues base, LineSensorValues current)
 {
   LineSensorStatus status = { 0, 0 };
-  if (current.left > (base.left + SENSOR_MARGIN)) 
+  if (current.left > (base.left + IRSENSOR_DELTA_THRESH)) 
   {
     status.leftOnBlack = 1;
   }
 
-  if (current.right > (base.right + SENSOR_MARGIN)) 
+  if (current.right > (base.right + IRSENSOR_DELTA_THRESH)) 
   {
     status.rightOnBlack = 1;
   }
@@ -69,11 +85,18 @@ LineSensorStatus LineSensor::compareSensorValues(LineSensorValues base, LineSens
 
 void LineSensor::caliberate()
 {
+    Serial.println(F("-----CALIBERATION-----"));
+    mBase = readSensors(IRSENSOR_READ_WINDOW);
+    mReadCount = 0;
+}
+
+void LineSensor::recaliberate()
+{
   mReadCount++;
-  if (mReadCount >= RECALIBERATION)
+  if (mReadCount >= IRSENSOR_RECALIBERATION)
   {
     Serial.println(F("-----RECALIBERATION-----"));
-    mBase = readSensors(SENSOR_READ_WINDOW);
+    mBase = readSensors(IRSENSOR_READ_WINDOW);
     mReadCount = 0;
   }
 }

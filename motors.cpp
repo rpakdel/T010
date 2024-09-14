@@ -1,4 +1,5 @@
 #include "motors.h"
+#include "config.h"
 
 Motors::Motors(byte leftMotorPin, byte rightMotorPin) :
   mLeftMotorPin(leftMotorPin),
@@ -24,7 +25,33 @@ void Motors::begin()
 
 void Motors::loop()
 {
+  // NOOP
+  #ifndef TEST_MODE
+    // NOOP
+  #else
+    testLoop();
+  #endif 
+}
 
+void Motors::testLoop()
+{
+  Serial.println(F("LEFT MOTOR SPINNING 3000 MS"));
+  rotateLeftMotor(10);
+  delay(3000);
+  rotateLeftMotor(0);
+  delay(1000);
+  
+  Serial.println(F("RIGHT MOTOR SPINNING 3000 MS"));
+  rotateRightMotor(10);
+  delay(3000);
+  rotateRightMotor(0);
+  delay(1000);
+}
+
+void Motors::stopMove()
+{
+  rotateLeftMotor(0);
+  rotateRightMotor(0);
 }
 
 void Motors::turnLeft(byte speedPercent, int delayMS)
@@ -43,17 +70,17 @@ void Motors::turnRight(byte speedPercent, int delayMS)
 
 void Motors::moveForward(byte speedPercent, int delayMS)
 {
-  move(speedPercent);
+  moveStraight(speedPercent);
   delay(delayMS);
 }
 
 void Motors::moveReverse(byte speedPercent, int delayMS)
 {
-  move(-1 * speedPercent);
+  moveStraight(-1 * speedPercent);
   delay(delayMS);
 }
 
-void Motors::move(byte speedPercent)
+void Motors::moveStraight(byte speedPercent)
 {
   rotateLeftMotor(speedPercent);
   rotateRightMotor(speedPercent);
@@ -84,14 +111,15 @@ byte Motors::getLeftDegree(byte speedPercent)
 
 byte Motors::clampSpeedPercent(byte speedPercent)
 {
-  if (speedPercent <= MIN_MOTOR_PERCENT && speedPercent > 0)
+  return speedPercent;
+  if (speedPercent <= MOTOR_MIN_PERCENT && speedPercent > 0)
   {
-    speedPercent = MIN_MOTOR_PERCENT;
+    speedPercent = MOTOR_MIN_PERCENT;
   }
 
-  if (speedPercent >= -MIN_MOTOR_PERCENT && speedPercent < 0)
+  if (speedPercent >= -MOTOR_MIN_PERCENT && speedPercent < 0)
   {
-    speedPercent = -MIN_MOTOR_PERCENT;
+    speedPercent = -MOTOR_MIN_PERCENT;
   }
 
   return speedPercent;

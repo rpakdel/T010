@@ -3,8 +3,6 @@
 #include <Arduino.h>
 #include <Servo.h>
 
-#define MIN_MOTOR_PERCENT 6 // minimum speed percent where motors spin
-
 class Motors
 {
   public:
@@ -16,6 +14,7 @@ class Motors
     void turnRight(byte speedPercent, int delayMS);
     void moveForward(byte speedPercent, int delayMS);
     void moveReverse(byte speedPercent, int delayMS);
+    void stopMove();
 
   private: 
     byte mLeftMotorPin;
@@ -27,5 +26,6 @@ class Motors
     byte getLeftDegree(byte speedPercent);
     void rotateLeftMotor(byte speedPercent);
     void rotateRightMotor(byte speedPercent);
-    void move(byte speedPercent);
+    void moveStraight(byte speedPercent);
+    void testLoop();
 };
